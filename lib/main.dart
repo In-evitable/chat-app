@@ -3,7 +3,6 @@ import 'package:chat_app/helper/helperfuncs.dart';
 import 'package:chat_app/views/chatroom.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 void main() => runApp(MyApp());
 
