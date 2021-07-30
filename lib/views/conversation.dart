@@ -1,8 +1,10 @@
 import 'package:chat_app/widgets/widget.dart';
 import 'package:flutter/material.dart';
+import 'package:chat_app/views/search.dart';
 
 class ConversationScreen extends StatefulWidget {
-  const ConversationScreen({Key? key}) : super(key: key);
+  final String user;
+  ConversationScreen(this.user);
 
   @override
   _ConversationScreenState createState() => _ConversationScreenState();
@@ -27,7 +29,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       // controller: searchTextEditingController,
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        hintText: 'Search by username',
+                        hintText: 'Message ${widget.user}',
                         hintStyle: TextStyle(color: Colors.white54),
                         border: InputBorder.none,
                       ),

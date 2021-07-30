@@ -5,6 +5,8 @@ import 'package:chat_app/widgets/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+late String user;
+
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
 
@@ -12,12 +14,14 @@ class SearchScreen extends StatefulWidget {
   _SearchScreenState createState() => _SearchScreenState();
 }
 
+QuerySnapshot? searchSnapshot;
+
 class _SearchScreenState extends State<SearchScreen> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
   TextEditingController searchTextEditingController =
       new TextEditingController();
 
-  QuerySnapshot? searchSnapshot;
+  bool searchPressed = false;
 
   initateSearch() {
     databaseMethods
@@ -45,13 +49,14 @@ class _SearchScreenState extends State<SearchScreen> {
       print('ID: $chatRoomId');
       DatabaseMethods().createChatRoom(chatRoomId, chatRoomMap);
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => ConversationScreen()));
+          MaterialPageRoute(builder: (context) => ConversationScreen(user)));
     } else {
       print('you cannot send messages to yourself');
     }
   }
 
   Widget searchTile({required String username, required String email}) {
+    user = username;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(children: [
@@ -84,17 +89,32 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget searchList() {
-    return searchSnapshot != null
-        ? ListView.builder(
-            itemCount: searchSnapshot!.docs.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return searchTile(
-                  username: searchSnapshot!.docs[index]['name'],
-                  email: searchSnapshot!.docs[index]['email']);
-            },
-          )
-        : Container();
+    if (searchSnapshot != null) {
+      if (searchSnapshot!.docs.length > 0) {
+        return ListView.builder(
+          itemCount: searchSnapshot!.docs.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return searchTile(
+                username: searchSnapshot!.docs[index]['name'],
+                email: searchSnapshot!.docs[index]['email']);
+          },
+        );
+      } else {
+        return Container(
+          alignment: Alignment.center,
+          margin: EdgeInsets.only(top: 300),
+          width: 300,
+          child: Text(
+            'Looks like there aren\'t any great matches for your search',
+            style: TextStyle(color: Colors.white, fontSize: 20),
+            textAlign: TextAlign.center,
+          ),
+        );
+      }
+    } else {
+      return Container();
+    }
   }
 
   @override
@@ -126,6 +146,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   )),
                   GestureDetector(
                     onTap: () {
+                      searchPressed = true;
                       initateSearch();
                     },
                     child: Container(
