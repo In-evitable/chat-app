@@ -1,3 +1,4 @@
+import 'package:chat_app/helper/consts.dart';
 import 'package:chat_app/services/auth.dart';
 import 'package:chat_app/services/database.dart';
 import 'package:chat_app/widgets/widget.dart';
@@ -39,7 +40,7 @@ class _SignInState extends State<SignIn> {
           .then((val) {
         snapshotUserInfo = val;
         HelperFunctions.saveUserName(snapshotUserInfo!.docs[0]['name']);
-        print('username: ${snapshotUserInfo!.docs[0]['name']}');
+        Constants.myName = HelperFunctions.getUserName() as String;
       });
 
       authMethods
@@ -57,61 +58,63 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBarMain(),
-        body: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height - 120,
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Form(
-                    key: formKey,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                            validator: (val) {
-                              return RegExp(
-                                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                      .hasMatch(val!)
-                                  ? null
-                                  : 'Please enter a valid email';
-                            },
-                            controller: emailTextEditingController,
-                            style: mainTextStyle(),
-                            decoration: textFieldDecoration('Email')),
-                        TextFormField(
-                            obscureText: true,
-                            validator: (val) {
-                              return val!.length >= 6
-                                  ? null
-                                  : 'Please enter a password with at least 6 characters.';
-                            },
-                            controller: passwordTextEditingController,
-                            style: mainTextStyle(),
-                            decoration: textFieldDecoration('Password')),
-                      ],
-                    ),
+    return isLoading
+        ? Container(child: Center(child: CircularProgressIndicator()))
+        : Scaffold(
+            appBar: AppBarMain(),
+            body: SingleChildScrollView(
+              child: Container(
+                height: MediaQuery.of(context).size.height - 120,
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                                validator: (val) {
+                                  return RegExp(
+                                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                          .hasMatch(val!)
+                                      ? null
+                                      : 'Please enter a valid email';
+                                },
+                                controller: emailTextEditingController,
+                                style: mainTextStyle(),
+                                decoration: textFieldDecoration('Email')),
+                            TextFormField(
+                                obscureText: true,
+                                validator: (val) {
+                                  return val!.length >= 6
+                                      ? null
+                                      : 'Please enter a password with at least 6 characters.';
+                                },
+                                controller: passwordTextEditingController,
+                                style: mainTextStyle(),
+                                decoration: textFieldDecoration('Password')),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      ForgotPasswordButton(),
+                      SizedBox(height: 16),
+                      GestureDetector(
+                        onTap: () => {signIn()},
+                        child: MainButton(
+                          text: 'Sign In',
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      registerRedirect(widget.toggle),
+                      SizedBox(height: 70),
+                    ],
                   ),
-                  SizedBox(height: 16),
-                  ForgotPasswordButton(),
-                  SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () => {signIn()},
-                    child: MainButton(
-                      text: 'Sign In',
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  registerRedirect(widget.toggle),
-                  SizedBox(height: 70),
-                ],
+                ),
               ),
-            ),
-          ),
-        ));
+            ));
   }
 }

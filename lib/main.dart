@@ -15,6 +15,7 @@ class _MyAppState extends State<MyApp> {
   bool isUserLoggedIn = false;
   @override
   void initState() {
+    Firebase.initializeApp();
     getLoggedInState();
     super.initState();
   }
@@ -29,7 +30,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    Firebase.initializeApp();
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,

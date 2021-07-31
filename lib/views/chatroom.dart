@@ -6,8 +6,6 @@ import 'package:chat_app/views/search.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoom extends StatefulWidget {
-  const ChatRoom({Key? key}) : super(key: key);
-
   @override
   _ChatRoomState createState() => _ChatRoomState();
 }
@@ -18,6 +16,7 @@ class _ChatRoomState extends State<ChatRoom> {
   @override
   void initState() {
     // TODO: implement initState
+    getUserInfo();
     super.initState();
   }
 
@@ -35,6 +34,7 @@ class _ChatRoomState extends State<ChatRoom> {
           GestureDetector(
               onTap: () {
                 authMethods.signOut();
+                HelperFunctions.saveUserLoggedIn(false);
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => Authenticate()));
               },

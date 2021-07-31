@@ -49,7 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
       print('ID: $chatRoomId');
       DatabaseMethods().createChatRoom(chatRoomId, chatRoomMap);
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => ConversationScreen(user)));
+          MaterialPageRoute(builder: (context) => ConversationScreen(user,chatRoomId)));
     } else {
       print('you cannot send messages to yourself');
     }
