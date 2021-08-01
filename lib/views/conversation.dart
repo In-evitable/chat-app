@@ -24,15 +24,19 @@ class _ConversationScreenState extends State<ConversationScreen> {
         stream: chatMessagesStream,
         builder: (context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.data != null) {
-            return ListView.builder(
-                itemCount: snapshot.data.docs.length,
-                itemBuilder: (context, index) {
-                  return MessageTile(
-                    message: snapshot.data.docs[index].data()['message'],
-                    isSentByMe: snapshot.data.docs[index].data()['sender'] ==
-                        Constants.myName,
-                  );
-                });
+            return Container(
+              padding: EdgeInsets.only(bottom: 80),
+              height: MediaQuery.of(context).size.height - 80,
+              child: ListView.builder(
+                  itemCount: snapshot.data.docs.length,
+                  itemBuilder: (context, index) {
+                    return MessageTile(
+                      message: snapshot.data.docs[index].data()['message'],
+                      isSentByMe: snapshot.data.docs[index].data()['sender'] ==
+                          Constants.myName,
+                    );
+                  }),
+            );
           } else {
             return Container();
           }
@@ -47,13 +51,15 @@ class _ConversationScreenState extends State<ConversationScreen> {
         'time': DateTime.now().microsecondsSinceEpoch
       };
       databaseMethods.addConversationMessages(widget.chatRoomId, messageMap);
-      messageController.text = '';
+      setState(() {
+        messageController.text = '';
+      });
     }
   }
 
   @override
   void initState() {
-    // TODO: implement initState
+  ``  // TODO: implement initState
     databaseMethods.getConversationMessages(widget.chatRoomId).then((value) {
       chatMessagesStream = value;
     });
