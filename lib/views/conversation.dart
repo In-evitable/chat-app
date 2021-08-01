@@ -28,7 +28,10 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 itemCount: snapshot.data.docs.length,
                 itemBuilder: (context, index) {
                   return MessageTile(
-                      snapshot.data.docs[index].data()['message']);
+                    message: snapshot.data.docs[index].data()['message'],
+                    isSentByMe: snapshot.data.docs[index].data()['sender'] ==
+                        Constants.myName,
+                  );
                 });
           } else {
             return Container();
@@ -117,14 +120,45 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
 class MessageTile extends StatelessWidget {
   final String message;
-  MessageTile(this.message);
+  final bool isSentByMe;
+  MessageTile({required this.message, required this.isSentByMe});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Text(
-      this.message,
-      style: mainTextStyle(),
-    ));
+      padding: EdgeInsets.only(
+          left: isSentByMe ? 0 : 16, right: isSentByMe ? 16 : 0),
+      margin: EdgeInsets.symmetric(vertical: 8),
+      alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
+      width: MediaQuery.of(context).size.width,
+      child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: isSentByMe
+                      ? [
+                          Color.fromRGBO(50, 50, 250, 1),
+                          Color.fromRGBO(25, 25, 200, 1)
+                        ]
+                      : [
+                          Color.fromRGBO(60, 60, 60, 1),
+                          Color.fromRGBO(50, 50, 50, 1)
+                        ]),
+              borderRadius: isSentByMe
+                  ? BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                      bottomLeft: Radius.circular(20))
+                  : BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                      bottomRight: Radius.circular(20))),
+          child: Text(
+            this.message,
+            style: TextStyle(color: Colors.white, fontSize: 17),
+          )),
+    );
   }
 }
